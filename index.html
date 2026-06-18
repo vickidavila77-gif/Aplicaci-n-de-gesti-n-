@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Préstamos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar__logo"><span>🖥️</span><span class="sidebar__logo-text">GestorTI</span></div>
+        <nav class="sidebar__nav">
+            <a href="#" class="sidebar__item"><span>🏠</span><span class="sidebar__text">Panel de Control</span></a>
+            <a href="#" class="sidebar__item active"><span>📋</span><span class="sidebar__text">Préstamos Activos</span></a>
+            <a href="#" class="sidebar__item"><span>📁</span><span class="sidebar__text">Todos los Préstamos</span></a>
+            <a href="#" class="sidebar__item"><span>📦</span><span class="sidebar__text">Inventario</span></a>
+            <a href="#" class="sidebar__item"><span>👥</span><span class="sidebar__text">Empleados</span></a>
+        </nav>
+        <div class="sidebar__footer">
+            <a href="#" class="sidebar__item"><span>⚙️</span><span class="sidebar__text">Configuración</span></a>
+            <a href="#" class="sidebar__item"><span>🚪</span><span class="sidebar__text">Cerrar Sesión</span></a>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <button class="topbar__menu-btn" id="menuBtn">☰</button>
+            <h1 class="topbar__title">Gestor de Préstamos de Periféricos de TI</h1>
+            <div class="topbar__actions">
+                <button class="topbar__icon-btn">🔍</button>
+                <div class="topbar__user"><span>👤</span><span class="topbar__username">Admin</span></div>
+                <button class="topbar__icon-btn">🚪</button>
+            </div>
+        </header>
+
+        <main class="content">
+            <button class="btn btn--primary content__add-btn" id="addLoanBtn">+ Registrar Nuevo Préstamo</button>
+
+            <section class="card">
+                <div class="card__header">
+                    <h2 class="card__title">Préstamos Activos Actuales (<span id="loanCount">0</span>)</h2>
+                    <div class="search-box">
+                        <span>🔍</span>
+                        <input type="text" class="search-box__input" id="searchInput" placeholder="Buscar empleados, activos...">
+                    </div>
+                </div>
+
+                <div class="table-container" id="tableContainer">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Estado</th>
+                                <th>ID Préstamo</th>
+                                <th>Fecha</th>
+                                <th>Empleado</th>
+                                <th>Tipo de Equipo</th>
+                                <th>ID Activo</th>
+                                <th>Nº de Serie</th>
+                                <th>Retorno Esperado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loansTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="cardsMobile"></div>
+                <div class="empty-state" id="emptyState">No hay préstamos activos actualmente ✅</div>
+
+                <div class="pagination" id="pagination">
+                    <div class="pagination__info">
+                        <span>Mostrando filas:</span>
+                        <select id="rowsPerPage">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                        </select>
+                        <span>— Página <span id="currentPage">1</span> de <span id="totalPages">1</span></span>
+                    </div>
+                    <div class="pagination__buttons">
+                        <button class="pagination__btn" id="prevPage">←</button>
+                        <button class="pagination__btn" id="nextPage">→</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal__header">
+                <h2>Registrar Nuevo Préstamo</h2>
+                <button class="modal__close-btn" id="closeModal">✕</button>
+            </div>
+            <form class="modal__form" id="loanForm" novalidate>
+                <div class="form-group">
+                    <label class="form-group__label">Nombre del empleado *</label>
+                    <input type="text" class="form-group__input" id="empName" placeholder="ej. Juan Pérez">
+                    <span class="form-group__error" id="empNameError"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-group__label">Departamento *</label>
+                    <input type="text" class="form-group__input" id="department" placeholder="ej. Marketing">
+                    <span class="form-group__error" id="departmentError"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-group__label">Tipo de Equipo *</label>
+                    <select class="form-group__select" id="equipmentType">
+                        <option value="">Selecciona un equipo</option>
+                        <option value="🖱️ Mouse">🖱️ Mouse</option>
+                        <option value="⌨️ Teclado">⌨️ Teclado</option>
+                        <option value="🔌 Cargador">🔌 Cargador</option>
+                        <option value="🖨️ Impresora">🖨️ Impresora</option>
+                        <option value="💻 Laptop">💻 Laptop</option>
+                    </select>
+                    <span class="form-group__error" id="equipmentError"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-group__label">Número de Serie *</label>
+                    <input type="text" class="form-group__input" id="serialNumber" placeholder="ej. C4D19E5">
+                    <span class="form-group__error" id="serialError"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-group__label">Fecha de Retorno Esperada *</label>
+                    <input type="date" class="form-group__input" id="returnDate">
+                    <span class="form-group__error" id="returnDateError"></span>
+                </div>
+                <div class="modal__buttons">
+                    <button type="button" class="btn btn--secondary" id="cancelModal">Cancelar</button>
+                    <button type="submit" class="btn btn--primary">Registrar Préstamo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
